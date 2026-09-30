@@ -39,3 +39,18 @@ class KnowledgeArticleResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+# Append to backend/app/models/pydantic_models.py
+
+class MLPredictRequest(BaseModel):
+    description: str = Field(..., min_length=10, example="Core database server memory limit reached causing query timeouts.")
+    category: Optional[str] = Field("Database", example="Database")
+    system_criticality: Optional[str] = Field("High", example="High")
+    affected_users: Optional[int] = Field(150, ge=1, le=10000, example=150)
+
+
+class MLPredictResponse(BaseModel):
+    predicted_priority: str = Field(..., example="P1")
+    confidence: float = Field(..., example=0.9425)
+    model_version: str = Field(..., example="1.0.0-logistic-regression")
