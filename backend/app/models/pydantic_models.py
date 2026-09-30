@@ -101,3 +101,25 @@ class AIAnalysisResponse(BaseModel):
     confidence: str
     limitations: str
     fallback_used: bool = False
+
+
+    # Append to backend/app/models/pydantic_models.py
+
+class AgentStepRequest(BaseModel):
+    title: str = Field(..., min_length=3, json_schema_extra={"example": "VPN connection application issue"})
+    description: str = Field(..., min_length=5, json_schema_extra={"example": "VPN connects but internal app fails to open."})
+    category: Optional[str] = Field("Network", json_schema_extra={"example": "Network"})
+    user_feedback: Optional[str] = Field("", json_schema_extra={"example": "I restarted VPN but app still gives 404."})
+    conversation_history: Optional[List[str]] = Field(default_factory=list)
+
+
+class AgentStepResponse(BaseModel):
+    current_step: int
+    status: str
+    ai_summary: str
+    recommended_action: str
+    all_recommended_steps: List[str]
+    evidence_retrieved: List[str]
+    possible_cause: str
+    escalation_recommended: bool
+    fallback_used: bool
