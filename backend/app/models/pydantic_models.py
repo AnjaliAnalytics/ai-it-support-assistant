@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Optional
+from typing import Dict, List, Optional
 from pydantic import ConfigDict, BaseModel, Field
 
 
@@ -103,8 +103,7 @@ class AIAnalysisResponse(BaseModel):
     fallback_used: bool = False
 
 
-    # Append to backend/app/models/pydantic_models.py
-
+# Controlled AI Agent Schemas (Phase 7)
 class AgentStepRequest(BaseModel):
     title: str = Field(..., min_length=3, json_schema_extra={"example": "VPN connection application issue"})
     description: str = Field(..., min_length=5, json_schema_extra={"example": "VPN connects but internal app fails to open."})
@@ -123,3 +122,11 @@ class AgentStepResponse(BaseModel):
     possible_cause: str
     escalation_recommended: bool
     fallback_used: bool
+
+
+# Analytics Schemas (Phase 8)
+class AnalyticsSummaryResponse(BaseModel):
+    total_incidents: int
+    total_knowledge_articles: int
+    incidents_by_priority: Dict[str, int]
+    incidents_by_status: Dict[str, int]
