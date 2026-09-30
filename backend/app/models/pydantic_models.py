@@ -77,3 +77,27 @@ class KBSearchResponse(BaseModel):
     query: str
     total_results: int
     articles: List[KBSearchItem]
+
+
+# Gemini AI Analysis Schemas (Phase 6)
+class AIAnalysisRequest(BaseModel):
+    title: str = Field(..., min_length=5, json_schema_extra={"example": "Cannot connect to VPN"})
+    description: str = Field(..., min_length=10, json_schema_extra={"example": "User receives timeout error when connecting to Mumbai VPN gateway."})
+    category: Optional[str] = Field("Network", json_schema_extra={"example": "Network"})
+    system_criticality: Optional[str] = Field("High", json_schema_extra={"example": "High"})
+    affected_users: Optional[int] = Field(100, ge=1, json_schema_extra={"example": 100})
+
+
+class AIAnalysisResponse(BaseModel):
+    predicted_priority: str
+    ml_confidence: float
+    summary: str
+    category_explanation: str
+    priority_explanation: str
+    recommended_steps: List[str]
+    evidence_used: List[str]
+    possible_cause: str
+    escalation_needed: bool
+    confidence: str
+    limitations: str
+    fallback_used: bool = False
