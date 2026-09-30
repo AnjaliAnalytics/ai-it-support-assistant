@@ -1,96 +1,71 @@
 import streamlit as st
 import requests
 
-# Page Configuration
+BACKEND_URL = "http://127.0.0.1:8000/api/v1"
+
 st.set_page_config(
     page_title="AI IT Support Assistant",
     page_icon="🛠️",
-    layout="wide",
-    initial_sidebar_state="expanded",
+    layout="wide"
 )
 
-# API Endpoint Config
-BACKEND_HEALTH_URL = "http://127.0.0.1:8000/api/v1/health"
+st.title("🛠️ AI-Powered IT Support & Incident Resolution Assistant")
+st.subheader("Automated Incident Classification, RAG Knowledge Retrieval & AI Recommendations")
 
 # Sidebar Navigation
-st.sidebar.title("🛠️ IT Support Hub")
-st.sidebar.markdown("---")
-page = st.sidebar.radio(
-    "Navigation",
-    [
-        "Overview",
-        "New Incident",
-        "AI Analysis",
-        "Knowledge Base",
-        "Incident History",
-        "System Health",
-    ],
-)
+navigation = st.sidebar.radio("Navigation", ["System Health", "Knowledge Base Search", "Predict Priority"])
 
-st.sidebar.markdown("---")
-st.sidebar.caption("Version: 1.0.0 Phase 2 Prototype")
-
-# Navigation Routing
-if page == "Overview":
-    st.title("AI-Powered IT Support & Incident Resolution Assistant")
-    st.subheader(
-        "Automated Incident Classification, RAG Knowledge Retrieval & AI Recommendations"
-    )
-
-    st.markdown("---")
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.markdown("### 🎯 System Capabilities")
-        st.markdown(
-            """
-        - **Instant Ticket Classification:** Machine learning powered categorisation and priority prediction.
-        - **Semantic Knowledge Retrieval (RAG):** Context-aware searching of knowledge base articles.
-        - **Grounded AI Guardrails:** Safe, non-destructive resolution steps powered by Gemini API.
-        - **Full Lifecycle Management:** Real-time database tracking and incident audit logging.
-        """
-        )
-
-    with col2:
-        st.markdown("### 💻 Tech Stack")
-        st.markdown(
-            """
-        - **Backend:** FastAPI + Python 3.10+
-        - **Database:** PostgreSQL + SQLAlchemy
-        - **Machine Learning:** Scikit-Learn + TF-IDF
-        - **LLM Orchestration:** Google Gemini API
-        - **Frontend:** Streamlit + Responsive UI
-        """
-        )
-
-    st.info(
-        "ℹ️ System initialised in Phase 2 mode. Core services ready for modular integration."
-    )
-
-elif page == "System Health":
-    st.title("🖥️ System Health & Status")
-
-    st.markdown("Checking connection to backend server...")
-
+if navigation == "System Health":
+    st.header("System Operational Status")
     try:
-        response = requests.get(BACKEND_HEALTH_URL, timeout=3)
+        response = requests.get(f"{BACKEND_URL}/health", timeout=5)
         if response.status_code == 200:
-            data = response.json()
             st.success("✅ Backend API is Operational")
-            st.json(data)
+            st.json(response.json())
         else:
-            st.error(
-                f"⚠️ Backend returned status code: {response.status_code}"
-            )
+            st.error("❌ Backend API Returned Error")
     except Exception as e:
-        st.error(
-            "❌ Unable to connect to Backend FastAPI server. Ensure backend is running on port 8000."
-        )
+        st.error(f"❌ Failed to connect to Backend API: {e}")
 
-else:
-    st.title(f"📂 {page}")
-    st.warning(
-        f"The **{page}** module is under development and scheduled for subsequent phases."
-    )
-    st.caption("All features will connect to live FastAPI backend services.")
+elif navigation == "Knowledge Base Search":
+    st.header("📚 Semantic Knowledge Base Search (RAG)")
+    st.write("Search IT documentation, guides, and resolution workflows grounded in database articles.")
+    
+    query = st.text_input("Enter incident issue or keywords:", "Cannot connect to VPN network")
+    
+    if st.button("Search Knowledge Base"):
+        with st.spinner("Retrieving relevant articles..."):
+            try:
+                res = requests.post(f"{BACKEND_URL}/knowledge/search", json={"query": query, "top_k": 3})
+                if res.status_code == 200:
+                    data = res.json()
+                    st.success(f"Found {data['total_results']} relevant knowledge articles.")
+                    for article in data['articles']:
+                        with st.expander(f"📖 {article['title']} (Relevance: {int(article['relevance_score']*100)}%)"):
+                            st.write(f"**Category:** {article['category']}")
+                            st.write(f"**Article ID:** `{article['id']}`")
+                            st.write(f"**Content Preview:** {article['content']}")
+                else:
+                    st.error("Error retrieving knowledge articles.")
+            except Exception as e:
+                st.error(f"Backend request failed: {e}")
+
+elif navigation == "Predict Priority":
+    st.header("🤖 ML Incident Priority Prediction")
+    desc = st.text_area("Incident Description", "Core database server high memory usage causing timeout.")
+    cat = st.selectbox("Category", ["Network", "Software", "Hardware", "Database", "Authentication"])
+    crit = st.selectbox("System Criticality", ["Low", "Medium", "High", "Critical"])
+    users = st.number_input("Affected Users", min_value=1, max_value=5000, value=50)
+
+    if st.button("Predict Priority"):
+        payload = {
+            "description": desc,
+            "category": cat,
+            "system_criticality": crit,
+            "affected_users": users
+        }
+        res = requests.post(f"{BACKEND_URL}/ml/predict-priority", json=payload)
+        if res.status_code == 200:
+            st.json(res.json())
+        else:
+            st.error("Prediction failed.")
