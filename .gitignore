@@ -1,0 +1,23 @@
+# Python environment & cache
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Environment files (CRITICAL: Never commit secrets)
+.env
+
+# Model artifacts & database files
+*.joblib
+*.db
+*.sqlite3
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
