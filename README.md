@@ -29,42 +29,24 @@ This platform bridges classical Machine Learning with modern Generative AI to de
 
 ```mermaid
 graph TD
-    %% Styling Classes
-    classDef client fill:#1e293b,stroke:#38bdf8,color:#fff,stroke-width:2px;
-    classDef api fill:#0f172a,stroke:#4ade80,color:#fff,stroke-width:2px;
-    classDef core fill:#334155,stroke:#c084fc,color:#fff,stroke-width:2px;
-    classDef llm fill:#1e1b4b,stroke:#fbbf24,color:#fff,stroke-width:2px;
-    classDef db fill:#064e3b,stroke:#34d399,color:#fff,stroke-width:2px;
-
-    %% Presentation Layer
     subgraph Presentation_Layer [Presentation & Client Tier]
         User[IT Engineer / Client] -->|HTTP / REST Requests| UI[Streamlit SaaS Application UI]
     end
 
-    %% Gateway Layer
     UI <-->|CORS Protected REST API| API[FastAPI Backend Gateway]
 
-    %% Intelligence Core
     subgraph Intelligence_Core [Microservice Core & Analytics Layer]
-        API --> ML[Scikit-Learn Classifier<br/>Logistic Regression N-Grams]
-        API --> RAG[TF-IDF RAG Search Engine<br/>Cosine Similarity Retrieval]
-        API --> Agent[Controlled AI Agent<br/>Stateful Tool Execution Boundary]
+        API --> ML[Scikit-Learn Classifier]
+        API --> RAG[TF-IDF RAG Search Engine]
+        API --> Agent[Controlled AI Agent]
     end
 
-    %% Synthesis & Data
     subgraph Infrastructure_Tier [Synthesis & Data Tier]
         RAG -->|Context Ingestion| LLM[Google Gemini 2.5 Flash Engine]
         Agent -->|Tool Execution Results| LLM
-        LLM -->|Structured Pydantic JSON Output| API
-        API <-->|SQLAlchemy ORM| DB[(PostgreSQL / Supabase Database)]
+        LLM -->|Structured JSON Output| API
+        API <-->|SQLAlchemy ORM| DB[(PostgreSQL Database)]
     end
-
-    %% Apply Styles
-    class User,UI client;
-    class API api;
-    class ML,RAG,Agent core;
-    class LLM llm;
-    class DB db;
 ⚙️ Controlled Agent Execution Workflow
 Code snippet
 sequenceDiagram
