@@ -38,25 +38,25 @@ graph TD
 
     %% Presentation Layer
     subgraph Presentation_Layer [Presentation & Client Tier]
-        User[👤 IT Engineer / Client] -->|HTTP / REST Requests| UI[💻 Streamlit SaaS Application UI]
+        User[IT Engineer / Client] -->|HTTP / REST Requests| UI[Streamlit SaaS Application UI]
     end
 
     %% Gateway Layer
-    UI <-->|CORS Protected REST API| API[🚀 FastAPI Backend Gateway]
+    UI <-->|CORS Protected REST API| API[FastAPI Backend Gateway]
 
     %% Intelligence Core
     subgraph Intelligence_Core [Microservice Core & Analytics Layer]
-        API --> ML[🤖 Scikit-Learn Classifier<br/>Logistic Regression N-Grams]
-        API --> RAG[📚 TF-IDF RAG Search Engine<br/>Cosine Similarity Retrieval]
-        API --> Agent[🛡️ Controlled AI Agent<br/>Stateful Tool Execution Boundary]
+        API --> ML[Scikit-Learn Classifier<br/>Logistic Regression N-Grams]
+        API --> RAG[TF-IDF RAG Search Engine<br/>Cosine Similarity Retrieval]
+        API --> Agent[Controlled AI Agent<br/>Stateful Tool Execution Boundary]
     end
 
     %% Synthesis & Data
     subgraph Infrastructure_Tier [Synthesis & Data Tier]
-        RAG -->|Context Ingestion| LLM[⚡ Google Gemini 2.5 Flash Engine]
+        RAG -->|Context Ingestion| LLM[Google Gemini 2.5 Flash Engine]
         Agent -->|Tool Execution Results| LLM
         LLM -->|Structured Pydantic JSON Output| API
-        API <-->|SQLAlchemy ORM| DB[(💾 PostgreSQL / Supabase Database)]
+        API <-->|SQLAlchemy ORM| DB[(PostgreSQL / Supabase Database)]
     end
 
     %% Apply Styles
@@ -65,14 +65,15 @@ graph TD
     class ML,RAG,Agent core;
     class LLM llm;
     class DB db;
-
+⚙️ Controlled Agent Execution Workflow
+Code snippet
 sequenceDiagram
     autonumber
-    actor User as 👤 IT Engineer
-    participant Agent as 🤖 Controlled Agent Orchestrator
-    participant Tools as 🛠️ Application Tools Boundary
-    participant DB as 💾 PostgreSQL / RAG Index
-    participant LLM as ⚡ Google Gemini 2.5 Flash
+    actor User as IT Engineer
+    participant Agent as Controlled Agent Orchestrator
+    participant Tools as Application Tools Boundary
+    participant DB as PostgreSQL / RAG Index
+    participant LLM as Google Gemini 2.5 Flash
 
     User->>Agent: Submit Incident Symptom Anomaly
     Agent->>Tools: Invoke search_knowledge_base()
@@ -81,8 +82,7 @@ sequenceDiagram
     Tools-->>Agent: Return Verified Evidence
     Agent->>LLM: Pass Grounded Evidence + State History
     LLM-->>Agent: Synthesize Remediation Action Steps
-    Agent-->>User: Present Step Action & Await Feedbacks
-
+    Agent-->>User: Present Step Action & Await Feedback
 🧰 Tech Stack
 Backend: Python 3.12, FastAPI, Uvicorn, Pydantic v2
 
@@ -104,11 +104,11 @@ Git installed
 
 2. Clone Repository & Setup Virtual Environment
 Bash
-git clone [https://github.com/your-username/ai-it-support-assistant.git](https://github.com/your-username/ai-it-support-assistant.git)
+git clone [https://github.com/AnjaliAnalytics/ai-it-support-assistant.git](https://github.com/AnjaliAnalytics/ai-it-support-assistant.git)
 cd ai-it-support-assistant
 
 python -m venv venv
 # On Windows PowerShell:
 .\venv\Scripts\Activate.ps1
 # On macOS/Linux:
-source venv/bin/activate    
+source venv/bin/activate
