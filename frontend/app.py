@@ -66,11 +66,12 @@ elif selected_page == "Troubleshooting Agent":
 elif selected_page == "System Health":
     st.title("🖥️ System Health & Monitoring")
     st.caption("Live operational status checks for application components.")
-    
+
     import requests
-    
+
     try:
-        res = requests.get(f"{BACKEND_URL}/health", timeout=5)
+        # Corrected FastAPI health check route under /api/v1/health
+        res = requests.get(f"{BACKEND_URL}/api/v1/health", timeout=5)
         if res.status_code == 200:
             st.success(f"FastAPI Backend: Online ({BACKEND_URL})")
         else:
