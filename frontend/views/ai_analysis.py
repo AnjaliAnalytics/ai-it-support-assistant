@@ -1,39 +1,48 @@
 import requests
 import streamlit as st
 
-BACKEND_URL = "http://127.0.0.1:8000/api/v1"
+# Retrieve global dynamic URL set in app.py
+BASE_URL = st.session_state.get(
+    "BACKEND_URL", "https://ai-it-support-backend.onrender.com"
+).rstrip("/")
+
+# Append API version path
+BACKEND_URL = f"{BASE_URL}/api/v1"
 
 
 def render_ai_analysis():
-    st.title("⚡ AI Resolution Workbench")
-    st.write("Grounded Gemini LLM Incident Analysis with RAG Context Retrieval")
+    st.markdown(
+        '<div class="header-title">🤖 AI-Powered Incident Diagnosis</div>',
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        '<div class="header-subtitle">Analyze issue telemetry with Gemini AI for'
+        " automated root-cause analysis and mitigation plans.</div>",
+        unsafe_allow_html=True,
+    )
 
-    title = st.text_input("Incident Title", "High CPU usage on Core Database Cluster")
-    cat = st.selectbox("Category", ["Database", "Network", "Software", "Hardware", "Authentication"])
-    crit = st.selectbox("System Criticality", ["Critical", "High", "Medium", "Low"])
-    users = st.number_input("Affected Users", value=150)
-    desc = st.text_area("Description", "PostgreSQL database CPU utilization reached 98% with query thread locks.")
+    incident_text = st.text_area(
+        "Paste Incident Logs / User Query",
+        height=150,
+        placeholder="e.g., PostgreSQL connection pool exhausted with FATAL: too many connections...",
+    )
 
-    if st.button("Run Full Resolution Engine", type="primary"):
-        with st.spinner("Processing RAG context & querying Gemini..."):
-            res = requests.post(
-                f"{BACKEND_URL}/analysis/resolve",
-                json={"title": title, "description": desc, "category": cat, "system_criticality": crit, "affected_users": users}
-            )
-            if res.status_code == 200:
-                data = res.json()
-                st.subheader("📋 Executive Summary")
-                st.write(data["summary"])
-                st.info(f"**Root Cause:** {data['possible_cause']}")
-
-                c1, c2 = st.columns(2)
-                with c1:
-                    st.subheader("🔧 Troubleshooting Steps")
-                    for s in data["recommended_steps"]:
-                        st.write(f"1. {s}")
-                with c2:
-                    st.subheader("📚 Grounded Evidence")
-                    for e in data["evidence_used"]:
-                        st.write(f"- {e}")
-            else:
-                st.error("Analysis failed.")
+    if st.button("Run AI Diagnosis", type="primary"):
+        if not incident_text.strip():
+            st.warning("Please enter incident details to analyze.")
+        else:
+            with st.spinner("Gemini AI is analyzing telemetry and knowledge base..."):
+                try:
+                    res = requests.post(
+                        f"{BACKEND_URL}/analysis/diagnose",
+                        json={"query": incident_text},
+                        timeout=15,
+                    )
+                    if res.status_code == 200:
+                        analysis = res.json()
+                        st.subheader("💡 Root Cause Analysis & Remediation")
+                        st.markdown(analysis.get("recommendation", "No output generated."))
+                    else:
+                        st.error(f"Analysis failed (Status {res.status_code}): {res.text}")
+                except Exception as e:
+                    st.error(f"Failed to communicate with AI Backend: {e}")
