@@ -4,9 +4,9 @@ An enterprise-grade, recruiter-focused AI SaaS platform that automates IT ticket
 
 ## 🌐 Live Application Links
 
-Live Interactive SaaS Dashboard**: [https://ai-it-support-assistant-gwnx6klfjvyeghe3us6r9n.streamlit.app](https://ai-it-support-assistant-gwnx6klfjvyeghe3us6r9n.streamlit.app)
-⚙️ Backend REST API Service**: [https://ai-it-support-backend.onrender.com](https://ai-it-support-backend.onrender.com)
-📖 Interactive OpenAPI / Swagger Documentation**: [https://ai-it-support-backend.onrender.com/docs](https://ai-it-support-backend.onrender.com/docs)
+Live Interactive SaaS Dashboard: [https://ai-it-support-assistant-gwnx6klfjvyeghe3us6r9n.streamlit.app](https://ai-it-support-assistant-gwnx6klfjvyeghe3us6r9n.streamlit.app)
+⚙️ Backend REST API Service: [https://ai-it-support-backend.onrender.com](https://ai-it-support-backend.onrender.com)
+📖 Interactive OpenAPI / Swagger Documentation: [https://ai-it-support-backend.onrender.com/docs](https://ai-it-support-backend.onrender.com/docs)
 
 ---
 
