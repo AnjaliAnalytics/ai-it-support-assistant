@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  # Database Service: PostgreSQL
+  db:
+    image: postgres:15-alpine
+    container_name: it_support_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: it_support_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Backend Service: FastAPI REST Gateway
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: it_support_backend
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - PROJECT_NAME=AI-Powered IT Support & Incident Resolution Assistant
+      - API_V1_STR=/api/v1
+      - ENVIRONMENT=production
+      - PORT=8000
+      - DATABASE_URL=postgresql://postgres:postgrespassword@db:5432/it_support_db
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - BACKEND_CORS_ORIGINS=["http://localhost:8501","http://127.0.0.1:8501","http://frontend:8501"]
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # Frontend Service: Streamlit SaaS Workbench
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: it_support_frontend
+    restart: always
+    ports:
+      - "8501:8501"
+    environment:
+      - BACKEND_URL=http://backend:8000/api/v1
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
